@@ -15,6 +15,7 @@ class Coppie{
 
     int getA() const {return a;}
     int getB() const {return b;}
+    int getSize() const {return b-a;}
 };
 
 ostream& operator <<(ostream& out, const Coppie& c){
@@ -61,17 +62,39 @@ void CountingSort(Coppie** A, Coppie** B, int n){
     }
 }
 
-int activities(Coppie** A, int n){
-    int B[n+1][n+1];
-    for(int i = 0; i<n+1; i++) 
-    int c = 1, e = A[0]->getB();
-    for(int i=1; i<n; i++){
-        if(A[i]->getA() >= e){
-            c++;
-            e = A[i]->getB();
-        }
+int max(int a, int b){
+    return a>b?a:b;
+}
+
+int lastactivity(Coppie** A, int i){
+    int k = i;
+    for(int j = i-1; j>=0; j--){
+        if(A[j]->getB()<=A[k]->getA()) return j;
     }
-    return c;
+    return -1;
+}
+
+int activity(Coppie** A, int n){
+    int B[n];
+    B[0] = A[0]->getSize();
+    for(int i=1; i<n; i++){
+        int inclAct = A[i]->getSize();
+        int l = lastactivity(A,i);
+        if(l != -1){
+            inclAct += B[l];
+        }
+        B[i] = max(inclAct, B[i-1]);
+    }
+    return B[n-1];
+}
+
+int activities(Coppie** A, int n){
+    if(n == 1) return A[n-1]->getSize();
+    int inclAct = A[n-1]->getSize();
+    int i = lastactivity(A,n);
+    if(i != -1) inclAct += activities(A,i+1);
+    int exclAct = activities(A,n-1);
+    return max(inclAct,exclAct);
 }
 
 int main(){
@@ -82,16 +105,16 @@ int main(){
     int N = 0;
     int x = 0, y = 0;
     char put = ' ';
-    for(int i=0; i<3; i++){
+    for(int i=0; i<100; i++){
         in >> N;
         Coppie** A = new Coppie*[N];
         Coppie** B = new Coppie*[N];
         for(int j = 0; j<N; j++){
-            in >> put >> x >> put >> y >> put;
+            in >> put >> x >> y >> put;
             A[j] = new Coppie(x,y);
         }
         CountingSort(A,B,N);
-        out << activities(B,N) << endl;
+        out << activity(B,N) << endl;
     }
     in.close();
     out.close();
