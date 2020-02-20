@@ -38,13 +38,13 @@ template<class H> class Heap{
     }
 
     void BuildMinHeap(){
-        for(int i = (heapsize>>1); i>=1; i--) heapify(i);
+        for(int i = (heapsize>>1); i>0; i--) heapify(i);
     }
 
     void HeapSort(){
         BuildMinHeap();
         int hsize = heapsize;
-        for(int i = hsize; i>=2; i--){
+        for(int i = hsize; i>1; i--){
             H tmp = heap[1];
             heap[1] = heap[i];
             heap[i] = tmp;

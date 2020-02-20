@@ -88,15 +88,6 @@ int activity(Coppie** A, int n){
     return B[n-1];
 }
 
-int activities(Coppie** A, int n){
-    if(n == 1) return A[n-1]->getSize();
-    int inclAct = A[n-1]->getSize();
-    int i = lastactivity(A,n);
-    if(i != -1) inclAct += activities(A,i+1);
-    int exclAct = activities(A,n-1);
-    return max(inclAct,exclAct);
-}
-
 int main(){
     ifstream in;
     in.open("input.txt");
